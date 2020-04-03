@@ -17,13 +17,17 @@
 		<!-- End Google Tag Manager -->
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link
-			href="https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic|Open+Sans+Condensed:700"
-			rel="stylesheet"
-			type="text/css"
-		/>
 		<link href="/style.css" rel="stylesheet" />
 		<title>Grow Your List!</title>
+		<style>
+			p { line-height: 1.5; }
+			.email-form-input {
+				display: grid;
+				grid-template-columns: max-content auto;
+				align-items: center;
+				max-width: 30em;
+			}
+		</style>
 	</head>
 	<body class="flex flex-direction-column">
 		<!-- Google Tag Manager (noscript) -->
@@ -88,10 +92,35 @@
 			</div>
 			<div class="p-1 p-t-0">
 				<div class="section width-max-readable m-auto">
-					<h1>Grow Your List - open source mailing list system for AWS</h1>
-				</div>
-				<div class="section width-max-readable m-auto m-b-3">
-					<p>Coming soon! Check back tomorrow for updates 🙂</p>
+					<h1>Grow Your List</h1>
+					<h2>Free, Open Source Email Marketing Platform</h2>
+					<p>🚧 <i>Grow Your List is work in progress, and is constantly being updated. This first version of the beta requires a bit of technical knowledge, so if you would like to be notified when an easy “one click install” is ready please sign up for updates here</i></p>
+					<h3>Sign up and stay up to date with our progress</h3>
+					<div class="email-form-input"><label for="email" class="m-r-0p5">Email:</label><input id="email" name="email" class="input" placeholder="Your email" size="20"></div>
+					<div id="success-message" class="status success m-t-1 m-b-1" style="display:none;">Please check your email for a confirmation link.</div>
+					<div id="error-message" class="status error m-t-1 m-b-1" style="display:none;">There was an error signing up. Please try again later.</div>
+					<div class="m-t-0p5"><button class="button main" id="get-updates-button">Get Updates</button></div>
+					<p><small>We hate spam and will never sell or share your email address. We try to send no more than 1 email a month, and you can always unsubscribe in just one click.</small></p>
+					<h2>What is Grow Your List?</h2>
+					<p>Grow Your List is an open source project with an ambitious goal: truly disrupt the Email Marketing industry. We want to be the WordPress of email automation, and let any person, business or community organization engage their audience for free*.</p>
+					<h3>1) 💌 Email Broadcasts</h3>
+					<p>Send a quick email to your list, or schedule one for the future.</p>
+					<h3>2) 🧮 Advanced segmentation</h3>
+					<p>Grow Your List is tagged based, so you can send emails to customers, leads, people who engaged (or didn't engage) with specific emails, and much more.</p>
+					<h3>3) 🤖 Autoresponders</h3>
+					<p>Create simple or advanced email automation sequences, from welcome emails, list nurture, purchase follow-up... and anything else you can dream of.</p>
+					<h3>4) 📮 Excellent deliverability</h3>
+					<p>There is a misconception that AWS (Amazon’s Simple Email Service) has bad deliverability. Your deliverability on AWS is tied directly to the quality of your emails. If you send engaging emails to an audience that wants them, your deliverability might even be better than the system you are currently using. <b>Do not use this service to send spam. It will not work, and Amazon will quickly cut off your ability to send emails.</b></p>
+					<p>Many more features are in the works, like split testing!</p>
+					<h2>How do you install it?</h2>
+					<p>In its current form, Grow Your List is installed with Node.JS via the <b>npx growyourlist setup</b> terminal command. If that sounds scary, this version is probably not the best fit for you right now. <b>Don’t worry! We hope to have a much more user-friendly version soon!</b> Please <a href="https://www.github.com/growyourlist/growyourlist/">check out our github</a> for more detailed setup instructions.</p>
+					<h3>Are you a developer? Help us make Grow Your List amazing!</h3>
+					<p>We are looking for people in the community to help us take Grow Your List to the next level. Please send me an email at gyl@jeremydavid.com and let me know how you would like to help.</p>
+					<h3>Do you work for a big company?</h3>
+					<p>We believe Grow Your List will truly transform the way organizations send emails, the way Wordpress did with websites and blogs. It already has a ton of functionality that many companies charge thousands for dollars for, and we're still just at the start of everything we want to achieve with it…</p>
+					<p>If you benefit from Grow Your List and are in a position to help us pursue the creation of a world-class email system, please consider financially backing this project as a sponsor. Send an email to gyl@jeremydavid.com with a subject like “I want to sponsor Grow Your List” and we will figure something out!</p>
+					<small><p><i>*The fine print:</i></p>
+					<p>By "Free" we mean there is no charge for the software. It’s open source. You still have to pay for your Amazon AWS fees - which could be free depending on your usage. When I moved my 360,000 subscribers over to Grow Your List my costs went from $4,193/mo with Drip to less than $400 on AWS!</p>
 				</div>
 			</div>
 		</main>
@@ -112,22 +141,33 @@
 		></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 		<script>
-			function roundComma(value) {
-				num = parseFloat(Math.round(value * 100) / 100).toFixed(2);
-				return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-			}
-
-			window.setInterval(
-				(function() {
-					var start = 1546300801000;
-					var textNode = document.createTextNode('0');
-					document.getElementById('counter').appendChild(textNode);
-					return function() {
-						textNode.data = Math.floor((Date.now() - start) / 1000);
-						textNode.data = roundComma(textNode.data * 0.00146);
-					};
-				})()
-			);
+			(function() {
+				const getUpdatesButton = document.getElementById('get-updates-button');
+				getUpdatesButton.addEventListener('click', function() {
+					document.getElementById('error-message').style.display = 'none';
+					document.getElementById('success-message').style.display = 'none';
+					getUpdatesButton.setAttribute('disabled', '');
+					const emailInput = document.getElementById("email");
+					fetch('https://jjyyal9ss2.execute-api.eu-central-1.amazonaws.com/beta/subscriber', {
+						method: 'POST',
+						mode: 'cors',
+						headers: { 'Content-Type': 'application/json; charset=utf-8' },
+						body: JSON.stringify({ email: emailInput.value })
+					})
+						.then(function(res) {
+							getUpdatesButton.removeAttribute('disabled');
+							if (!res.ok) {
+								throw new Error(res.statusText || 'Error making request');
+							}
+							document.getElementById('success-message').style.display = 'block';
+						})
+						.catch(function(err) {
+							getUpdatesButton.removeAttribute('disabled');
+							console.error(err);
+							document.getElementById('error-message').style.display = 'block';
+						})
+				});
+			})();
 		</script>
 	</body>
 </html>
