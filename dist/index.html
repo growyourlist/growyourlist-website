@@ -155,7 +155,6 @@
 						body: JSON.stringify({ email: emailInput.value })
 					})
 						.then(function(res) {
-							getUpdatesButton.removeAttribute('disabled');
 							if (!res.ok) {
 								throw new Error(res.statusText || 'Error making request');
 							}
